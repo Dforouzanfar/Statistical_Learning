@@ -8,8 +8,6 @@ Smoke_path <- 'https://raw.githubusercontent.com/Dforouzanfar/Statistical_Learni
 smoke <- read.csv(Smoke_path)
 
 # EDA
-str(smoke)
-summary(smoke)
 
 ## gender
 unique(smoke$gender)
@@ -43,7 +41,7 @@ smoke$nationality <- as.factor(smoke$nationality)
 
 ## ethnicity
 unique(smoke$ethnicity)
-(tes <- table(smoke$ethnicity, smoke$smoke))
+tes <- table(smoke$ethnicity, smoke$smoke)
 smoke <- subset(smoke, select = -ethnicity)
 
 ## gross_income
@@ -86,6 +84,9 @@ any(is.na(smoke$type))
 sum(is.na(smoke$type))
 smoke <- subset(smoke, select = -type)
 
+str(smoke)
+summary(smoke)
+
 # Visualization
 ## gender
 ggplot(smoke, aes(x = gender, fill = factor(gender))) +
@@ -119,6 +120,10 @@ smokers <- smoke[smoke$smoke == "Yes", ]
 oldest_smoker <- smokers[which.max(smokers$age), ]
 
 smoke <- smoke[!(smoke$smoke == "Yes" & smoke$age == max(smoke[smoke$smoke == "Yes", ]$age)), ]
+
+ggplot(data = smoke, aes(x = smoke, y = age, group = smoke), fig(10,4)) +
+  geom_boxplot() +
+  theme(plot.caption = element_text(hjust = 0, size = 24, face = "bold"))
 
 ## marital_status
 ggplot(smoke, aes(x = marital_status, fill = factor(marital_status))) +

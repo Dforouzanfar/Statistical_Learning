@@ -77,7 +77,7 @@ metrics <- data.frame(
 print(metrics)
 
 
-# xgboost with histogram
+# eXtreme Gradient Boosting
 data.train <- xgb.DMatrix(data=data.matrix(train[, !colnames(test) %in% c("smoke")]), label = train$smoke)
 data.test <- xgb.DMatrix(data = data.matrix(test[, !colnames(test) %in% c("smoke")]))
 parameters <- list(
