@@ -9,7 +9,8 @@ registerDoParallel(cores = cores)
 trans <- fread("transactions.csv")
 colnames(trans) <- c("step", "type", "amount", "customer", "old-balance-customer", "new-balance-customer", "recipient", "old-balance-recipient", "new-balance-recipient", "isFraud")
 trans <- as.data.frame(trans)
-
+str(trans)
+summary(trans)
 
 # Preprocessing
 trans <- trans[, !names(trans) %in% c("customer", "recipient", "step")]
@@ -42,13 +43,13 @@ h2o.init(nthreads = cores)
 trans <- trans[, !names(trans) %in% "isFraud"]
 trans <- as.h2o(trans)
 
-
 pca <- h2o.prcomp(training_frame = trans,
                   k = 2,
                   use_all_factor_levels = TRUE,
                   pca_method = "Randomized",
                   transform = "STANDARDIZE",
                   impute_missing = TRUE)
+
 pred_pca=h2o.predict(pca, trans)
 
 z_scores <- h2o.scale(pred_pca, center = FALSE, scale = FALSE)
@@ -58,8 +59,8 @@ outliers <- final_results[h2o.abs(z_scores$PC1) > threshold |
                             h2o.abs(z_scores$PC2) > threshold, ]
 outliers=as.data.frame(outliers)
 ggplot() +
-  geom_point(data = as.data.frame(final_results), aes(x = PC1, y = PC2), color = "blue") +
-  geom_point(data = as.data.frame(outliers), aes(x = PC1, y = PC2), color = "red") +
+  geom_point(data = as.data.frame(final_results), aes(x = PC1, y = PC2), color = "skyblue") +
+  geom_point(data = as.data.frame(outliers), aes(x = PC1, y = PC2), color = "blue") +
   xlab("PC1") + ylab("PC2")
 
 h2o.shutdown()
